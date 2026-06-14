@@ -1,0 +1,61 @@
+<div class="content-header">
+    <h3>Reportes Financieros Anidados</h3>
+    <p>Consolidación contable utilizando recorrido de <strong>Árboles Jerárquicos en Post-orden</strong>.</p>
+</div>
+
+<div style="display: flex; gap: 20px;">
+    <!-- Visualización del Árbol -->
+    <div class="card" style="flex: 1;">
+        <h4 style="margin-bottom: 15px; font-size: 16px; color: var(--text-main);">Estructura Contable (Árbol N-ario)</h4>
+        
+        <div style="background: var(--bg-body); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); font-family: monospace; color: var(--text-main); line-height: 1.8;">
+            <ul>
+                <li>📁 <strong>Balance General</strong> (Raíz)
+                    <ul>
+                        <li>📁 <strong>Ingresos</strong> (Nodo A)
+                            <ul>
+                                <li>📄 Ventas Salón: S/ 500</li>
+                                <li>📄 Delivery: S/ 300</li>
+                            </ul>
+                        </li>
+                        <li>📁 <strong>Egresos</strong> (Nodo B)
+                            <ul>
+                                <li>📄 Proveedores: S/ -150</li>
+                                <li>📄 Planilla: S/ -200</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        
+        <button onclick="recorrerArbol()" class="btn btn-primary" style="width: 100%; margin-top: 20px;">Ejecutar Recorrido Post-orden</button>
+    </div>
+
+    <!-- Panel de Diagnóstico -->
+    <div class="card" style="flex: 1; display: flex; flex-direction: column;">
+        <h4 style="margin-bottom: 5px; font-size: 16px; color: var(--text-main);">Consola de Sumatoria</h4>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">El recorrido Post-orden (Izquierda, Derecha, Raíz) asegura que las hojas se sumen antes que los nodos padres.</p>
+        
+        <div class="math-log" id="log-arbol" style="flex-grow: 1;">
+> Esperando orden de recorrido...
+        </div>
+    </div>
+</div>
+
+<script>
+    function recorrerArbol() {
+        const log = document.getElementById('log-arbol');
+        log.innerHTML = `> Iniciando Post-orden (Hojas primero)...\n\n`;
+        
+        setTimeout(() => log.innerHTML += `1. Visitando Hoja: Ventas Salón (500)\n`, 500);
+        setTimeout(() => log.innerHTML += `2. Visitando Hoja: Delivery (300)\n`, 1000);
+        setTimeout(() => log.innerHTML += `3. Consolidando Nodo A (Ingresos): 500 + 300 = <span style="color:var(--accent)">800</span>\n\n`, 1500);
+        
+        setTimeout(() => log.innerHTML += `4. Visitando Hoja: Proveedores (-150)\n`, 2000);
+        setTimeout(() => log.innerHTML += `5. Visitando Hoja: Planilla (-200)\n`, 2500);
+        setTimeout(() => log.innerHTML += `6. Consolidando Nodo B (Egresos): -150 - 200 = <span style="color:#ef4444">-350</span>\n\n`, 3000);
+        
+        setTimeout(() => log.innerHTML += `7. Consolidando Raíz (Balance General):\n   Nodo A (800) + Nodo B (-350) = <strong style="color:#10b981; font-size: 16px;">S/ 450.00</strong>\n\n> Recorrido finalizado exitosamente.`, 3500);
+    }
+</script>

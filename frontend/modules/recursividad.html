@@ -1,0 +1,82 @@
+<div class="content-header">
+    <h3>Motor de Sugerencias</h3>
+    <p>Algoritmo de recomendación utilizando <strong>Funciones Recursivas</strong> para analizar relaciones de productos.</p>
+</div>
+
+<div style="display: flex; gap: 20px;">
+    <div class="card" style="flex: 1;">
+        <h4 style="margin-bottom: 15px; font-size: 16px; color: var(--text-main);">Analizar Preferencias</h4>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Selecciona el último producto comprado por el cliente:</p>
+        
+        <select id="producto-base" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-body); color: var(--text-main); margin-bottom: 20px;">
+            <option value="hamburguesa">🍔 Hamburguesa Clásica</option>
+            <option value="pizza">🍕 Pizza Margarita</option>
+            <option value="ensalada">🥗 Ensalada César</option>
+        </select>
+        
+        <button onclick="ejecutarRecursividad()" class="btn btn-primary" style="width: 100%;">Buscar Sugerencias (Recursión)</button>
+    </div>
+
+    <div class="card" style="flex: 1; display: flex; flex-direction: column;">
+        <h4 style="margin-bottom: 5px; font-size: 16px; color: var(--text-main);">Árbol de Decisión Recursivo</h4>
+        
+        <div class="math-log" id="log-recursivo" style="min-height: 200px; flex-grow: 1; margin-top: 10px; font-size: 12px; white-space: pre-wrap; overflow-y: auto;">
+> Esperando ejecución del algoritmo...
+        </div>
+    </div>
+</div>
+
+<script>
+    // Base de datos simulada de relaciones
+    const db = {
+        hamburguesa: { ingredientes: ['carne', 'pan'], relacionado: 'papas' },
+        papas: { ingredientes: ['papa', 'sal'], relacionado: 'gaseosa' },
+        gaseosa: { ingredientes: ['azucar'], relacionado: null },
+        
+        pizza: { ingredientes: ['queso', 'masa'], relacionado: 'pan_ajo' },
+        pan_ajo: { ingredientes: ['pan', 'ajo'], relacionado: 'gaseosa' },
+        
+        ensalada: { ingredientes: ['lechuga', 'pollo'], relacionado: 'agua' },
+        agua: { ingredientes: ['agua'], relacionado: 'fruta' },
+        fruta: { ingredientes: ['fructosa'], relacionado: null }
+    };
+
+    const max_profundidad = 3;
+
+    function buscarSugerencia(producto, profundidad, logElement) {
+        // Caso Base 1: Límite de profundidad
+        if (profundidad >= max_profundidad) {
+            logElement.innerHTML += `  [Caso Base] Profundidad máx (${max_profundidad}) alcanzada. Retornando.\n`;
+            return;
+        }
+        
+        const data = db[producto];
+        
+        // Caso Base 2: No hay más relaciones
+        if (!data || !data.relacionado) {
+            logElement.innerHTML += `  [Caso Base] '${producto}' no tiene más relaciones. Retornando.\n`;
+            return;
+        }
+
+        // Llamada Recursiva
+        const sugerencia = data.relacionado;
+        logElement.innerHTML += `${"  ".repeat(profundidad)}> Nivel ${profundidad}: Analizando '${producto}' -> Sugiere '${sugerencia}'\n`;
+        
+        // Pausa simulada para visualización (se hace con setTimeout en la vida real, pero aquí lo concatenamos rápido)
+        buscarSugerencia(sugerencia, profundidad + 1, logElement);
+        
+        // Backtracking (retorno)
+        logElement.innerHTML += `${"  ".repeat(profundidad)}< Retornando del nivel ${profundidad}\n`;
+    }
+
+    function ejecutarRecursividad() {
+        const log = document.getElementById('log-recursivo');
+        const inicio = document.getElementById('producto-base').value;
+        
+        log.innerHTML = `> function buscarSugerencia('${inicio}', 0)\n\n`;
+        
+        buscarSugerencia(inicio, 0, log);
+        
+        log.innerHTML += `\n> EJECUCIÓN TERMINADA.\n> Se recomendará al cliente lo encontrado en el árbol.`;
+    }
+</script>

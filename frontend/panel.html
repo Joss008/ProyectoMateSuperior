@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mate Superior - Food Delivery Admin</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Hoja de Estilos del Panel -->
+    <link rel="stylesheet" href="css/panel.css">
+</head>
+<body>
+
+    <!-- Barra Lateral -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Mate Superior 🍕</h2>
+            <span id="user-role-title">Cargando...</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="section-title">Principal</li>
+            <li><a href="#" onclick="cargarModulo('inicio')">📊 Dashboard</a></li>
+            
+            <li class="section-title">Laboratorio Matemático</li>
+            <li><a href="#" onclick="cargarModulo('menu-logico')">🍔 Lógica y Conjuntos</a></li>
+            <li><a href="#" onclick="cargarModulo('grafo-delivery')">🛵 Grafos: Delivery</a></li>
+            <li><a href="#" onclick="cargarModulo('generador-tokens')">🎟️ Permutaciones: Cupones</a></li>
+            
+            <li class="section-title">Sistemas Avanzados</li>
+            <li><a href="#" onclick="cargarModulo('recursividad')">🧠 Recursividad: Sugerencias</a></li>
+            <li><a href="#" onclick="cargarModulo('arboles')">💰 Árboles: Finanzas</a></li>
+            <li><a href="#" onclick="cargarModulo('automatas')">💳 Autómatas: Pagos</a></li>
+            <li><a href="#" onclick="cargarModulo('mst')">🗺️ Árbol Mínimo: Expansión</a></li>
+            
+            <li id="logout-btn"><a href="#" id="enlace-logout">🚪 Cerrar Sesión</a></li>
+        </ul>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <!-- Barra Superior -->
+        <header class="topbar">
+            <h2 id="welcome-message">...</h2>
+            <div class="user-profile">
+                <!-- Botón Modo Claro/Oscuro -->
+                <div class="theme-switch" id="btn-theme" onclick="toggleTheme()" title="Cambiar Tema">
+                    ☀️
+                </div>
+                <span class="badge purple" id="user-badge">Cargando...</span>
+            </div>
+        </header>
+
+        <!-- Área de Trabajo Dinámica -->
+        <div class="content-area" id="dynamic-content">
+            <div class="content-header">
+                <h3>Resumen de Hoy</h3>
+                <p>Bienvenido al laboratorio matemático y sistema de gestión de Mate Superior.</p>
+            </div>
+            <div class="cards-container" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                <div class="card">
+                    <h4 style="color: var(--text-muted); font-size: 14px; margin-bottom: 10px;">Ventas del Día</h4>
+                    <p style="font-size: 28px; font-weight: 700; color: var(--text-main);">S/ 1,240.00</p>
+                </div>
+                <div class="card">
+                    <h4 style="color: var(--text-muted); font-size: 14px; margin-bottom: 10px;">Órdenes Activas</h4>
+                    <p style="font-size: 28px; font-weight: 700; color: var(--text-main);">14 <span class="badge orange">En ruta</span></p>
+                </div>
+                <div class="card">
+                    <h4 style="color: var(--text-muted); font-size: 14px; margin-bottom: 10px;">Algoritmos Ejecutados</h4>
+                    <p style="font-size: 28px; font-weight: 700; color: var(--text-main);">342 <span class="badge green">Exitosos</span></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/panel.js"></script>
+    <script>
+        // Configurar Tema
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('btn-theme');
+            body.classList.toggle('light-mode');
+            if(body.classList.contains('light-mode')) {
+                btn.innerText = '🌙';
+            } else {
+                btn.innerText = '☀️';
+            }
+        }
+
+        // Pequeño script adicional para mostrar el badge en la topbar
+        document.addEventListener('DOMContentLoaded', () => {
+            const rol = localStorage.getItem('rol');
+            const badge = document.getElementById('user-badge');
+            if(rol) {
+                badge.innerText = rol.toUpperCase();
+                if(rol === 'admin') badge.className = 'badge orange';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<div class="content-header">
+    <h3>Gestor Inteligente de Menú</h3>
+    <p>Utiliza filtros semánticos para encontrar platillos. Desarrollado con <strong>Teoría de Conjuntos y Lógica Proposicional</strong>.</p>
+</div>
+
+<div style="display: flex; gap: 20px;">
+    <!-- Panel de Control (Filtros realistas) -->
+    <div class="card" style="flex: 1;">
+        <h4 style="margin-bottom: 15px; font-size: 16px;">Filtros de Búsqueda</h4>
+        
+        <div style="margin-bottom: 15px;">
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                <input type="checkbox" id="chk-fondo" onchange="actualizarFiltros()"> 
+                <span>Solo Platos de Fondo</span>
+            </label>
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                <input type="checkbox" id="chk-mariscos" onchange="actualizarFiltros()"> 
+                <span>Contiene Mariscos (Alerta Alergia)</span>
+            </label>
+        </div>
+        <div style="margin-bottom: 25px;">
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                <input type="checkbox" id="chk-descuento" onchange="actualizarFiltros()"> 
+                <span>Aplicar Descuento Especial</span>
+            </label>
+        </div>
+
+        <!-- El log matemático disfrazado de "Consola de Diagnóstico" -->
+        <div style="border-top: 1px solid #e5e7eb; padding-top: 15px;">
+            <h5 style="color: #9ca3af; font-size: 12px; text-transform: uppercase;">Diagnóstico del Servidor (Lógica)</h5>
+            <div class="math-log" id="ecuacion-display">
+                // Evaluando regla de negocio...
+            </div>
+        </div>
+    </div>
+
+    <!-- Resultados del Menú -->
+    <div class="card" style="flex: 2; background: #f9fafb; border: none;">
+        <h4 style="margin-bottom: 15px; font-size: 16px;">Catálogo Disponible</h4>
+        <div id="lista-platillos" style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+            <!-- Se llena con JS -->
+        </div>
+    </div>
+</div>
+
+<script>
+    const platillos = [
+        { nombre: "Ceviche Mixto Carretillero", fondo: true, mariscos: true, descuento: false, img: "🍤", precio: 35.00 },
+        { nombre: "Lomo Saltado a lo Pobre", fondo: true, mariscos: false, descuento: true, img: "🥩", precio: 28.00 },
+        { nombre: "Ensalada César con Pollo", fondo: false, mariscos: false, descuento: true, img: "🥗", precio: 18.00 },
+        { combo: true, nombre: "Combo Arroz con Mariscos", fondo: true, mariscos: true, descuento: true, img: "🥘", precio: 45.00 },
+        { nombre: "Caldo de Gallina", fondo: false, mariscos: false, descuento: false, img: "🥣", precio: 15.00 }
+    ];
+
+    function actualizarFiltros() {
+        const P = document.getElementById('chk-fondo').checked;
+        const Q = document.getElementById('chk-mariscos').checked;
+        const R = document.getElementById('chk-descuento').checked;
+
+        // Mostrar la lógica matemática de fondo
+        const eqDisplay = document.getElementById('ecuacion-display');
+        eqDisplay.innerHTML = `> P = Fondo: ${P}<br>> Q = Mariscos: ${Q}<br>> R = Descuento: ${R}<br><br>> EVAL: P AND (NOT Q OR R)<br>> RETURN RESULT SET`;
+
+        const contenedor = document.getElementById('lista-platillos');
+        contenedor.innerHTML = '';
+
+        platillos.forEach(plato => {
+            let mostrar = true;
+            if(P || Q || R) {
+                 const plato_P = plato.fondo;
+                 const plato_Q = plato.mariscos;
+                 const plato_R = plato.descuento;
+                 
+                 // Evaluamos la lógica proposicional
+                 mostrar = plato_P && (!plato_Q || plato_R);
+            }
+
+            if (mostrar) {
+                contenedor.innerHTML += `
+                    <div style="background: white; padding: 15px; border: 1px solid #e5e7eb; border-radius: 8px; display: flex; align-items: center; gap: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                        <div style="font-size: 30px; background: #f3f4f6; padding: 10px; border-radius: 8px;">${plato.img}</div>
+                        <div style="flex-grow: 1;">
+                            <h4 style="color: #111827; margin-bottom: 4px;">${plato.nombre}</h4>
+                            <div style="display:flex; gap: 5px;">
+                                ${plato.fondo ? '<span class="badge blue">Fondo</span>' : '<span class="badge">Entrada</span>'}
+                                ${plato.mariscos ? '<span class="badge orange">Mariscos</span>' : ''}
+                                ${plato.descuento ? '<span class="badge green">Promo</span>' : ''}
+                            </div>
+                        </div>
+                        <div style="font-weight: 700; font-size: 18px; color: #111827;">S/ ${plato.precio.toFixed(2)}</div>
+                    </div>
+                `;
+            }
+        });
+    }
+
+    actualizarFiltros();
+</script>

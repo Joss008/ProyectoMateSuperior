@@ -1,0 +1,162 @@
+/* Reseteo básico de estilos */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #0f172a; /* Azul Noche Oscuro */
+    
+    /* Imagen de fondo de comida. 
+       Como no tengo acceso directo al archivo del usuario, pongo un placeholder
+       que el usuario debe reemplazar por url('PYFOOT1.png') si la tiene en la carpeta css,
+       o url('../PYFOOT1.png') si está en frontend. */
+    background-image: 
+        linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)), 
+        url('../PYFOOT1.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efecto Noche Estrellada Dinámica */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: 
+        radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 4px),
+        radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px);
+    background-size: 550px 550px, 350px 350px;
+    background-position: 0 0, 40px 60px;
+    opacity: 0.15;
+    animation: starsMove 100s linear infinite;
+    z-index: 1;
+}
+
+@keyframes starsMove {
+    from { background-position: 0 0, 40px 60px; }
+    to { background-position: 550px 550px, 390px 410px; }
+}
+
+/* Contenedor principal del formulario */
+.login-container {
+    background-color: rgba(30, 41, 59, 0.85); /* Semitransparente oscuro */
+    backdrop-filter: blur(12px); /* Efecto vidrio (Glassmorphism) */
+    -webkit-backdrop-filter: blur(12px);
+    padding: 50px 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(139, 92, 246, 0.2); /* Sombra morada */
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-top: 4px solid #a855f7; /* Morado brillante */
+}
+
+.login-container h2 {
+    color: #ffffff;
+    margin-bottom: 10px;
+    font-size: 28px;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(168, 85, 247, 0.5); /* Brillo de neón */
+}
+
+.login-container p {
+    color: #cbd5e1;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+/* Grupo de inputs */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #e2e8f0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #475569;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #ffffff;
+    transition: all 0.3s ease;
+    background-color: rgba(15, 23, 42, 0.6);
+}
+
+.input-group input::placeholder {
+    color: #64748b;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #a855f7;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.25);
+    background-color: rgba(15, 23, 42, 0.9);
+}
+
+/* Botón principal */
+button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #8b5cf6, #6d28d9); /* Degradado morado */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+}
+
+button:hover {
+    background: linear-gradient(135deg, #a855f7, #7c3aed);
+    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6);
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* Enlaces adicionales */
+.links {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.links a {
+    color: #c4b5fd; /* Morado claro */
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.links a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+    text-shadow: 0 0 8px rgba(196, 181, 253, 0.8);
+}

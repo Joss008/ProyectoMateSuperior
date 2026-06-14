@@ -1,0 +1,132 @@
+<div class="content-header">
+    <h3>Seguridad Transaccional</h3>
+    <p>Prevención de fraude estructurando la pasarela de pagos con <strong>Autómatas Finitos Deterministas (AFD)</strong>.</p>
+</div>
+
+<div style="display: flex; gap: 20px;">
+    <div class="card" style="flex: 2; display: flex; flex-direction: column;">
+        <h4 style="margin-bottom: 15px; font-size: 16px; color: var(--text-main);">Grafo de Estados del Autómata</h4>
+        
+        <div style="background: var(--bg-body); flex-grow: 1; border-radius: 8px; border: 1px solid var(--border-color); position: relative; min-height: 250px; overflow: hidden;" id="automata-container">
+            
+            <svg width="100%" height="100%" style="position: absolute; top:0; left:0;">
+                <!-- q0 to q1 -->
+                <line x1="80" y1="125" x2="200" y2="125" stroke="var(--border-color)" stroke-width="3" id="line-0-1" />
+                <polygon points="190,120 200,125 190,130" fill="var(--border-color)" id="arrow-0-1" />
+                <text x="140" y="115" fill="var(--text-muted)" font-size="10" text-anchor="middle">"Pagar"</text>
+
+                <!-- q1 to q2 -->
+                <line x1="240" y1="125" x2="360" y2="125" stroke="var(--border-color)" stroke-width="3" id="line-1-2" />
+                <polygon points="350,120 360,125 350,130" fill="var(--border-color)" id="arrow-1-2" />
+                <text x="300" y="115" fill="var(--text-muted)" font-size="10" text-anchor="middle">"Validar"</text>
+
+                <!-- q1 to qError -->
+                <line x1="220" y1="145" x2="220" y2="200" stroke="var(--border-color)" stroke-width="3" id="line-1-e" />
+                <polygon points="215,190 220,200 225,190" fill="var(--border-color)" id="arrow-1-e" />
+                <text x="250" y="180" fill="var(--text-muted)" font-size="10" text-anchor="middle">"Rechazo"</text>
+            </svg>
+
+            <!-- Estados -->
+            <div class="state-node" id="q0" style="left: 40px; top: 105px; border-color: var(--primary);">q0<br><span>Emitida</span></div>
+            <div class="state-node" id="q1" style="left: 200px; top: 105px;">q1<br><span>Pendiente</span></div>
+            <div class="state-node" id="q2" style="left: 360px; top: 105px; border: 4px double #10b981;">q2<br><span>Aceptada</span></div>
+            
+            <div class="state-node" id="qE" style="left: 200px; top: 200px; border-color: #ef4444;">qE<br><span>Error</span></div>
+        </div>
+    </div>
+
+    <div class="card" style="flex: 1;">
+        <h4 style="margin-bottom: 15px; font-size: 16px; color: var(--text-main);">Simulador de Peticiones</h4>
+        
+        <button onclick="simularExito()" class="btn btn-primary" style="width: 100%; margin-bottom: 10px;">Simular Transacción Exitosa</button>
+        <button onclick="simularError()" class="btn" style="width: 100%; background: #ef4444; color: white; margin-bottom: 10px;">Simular Rechazo de Tarjeta</button>
+        <button onclick="simularFraude()" class="btn" style="width: 100%; background: #f59e0b; color: white;">Intentar Fraude (Salto de q0 a q2)</button>
+
+        <div class="math-log" id="log-automata" style="margin-top: 20px;">
+> Autómata listo. Esperando cadena de entrada...
+        </div>
+    </div>
+</div>
+
+<style>
+    .state-node {
+        position: absolute;
+        width: 40px; height: 40px;
+        background: var(--bg-card);
+        border: 2px solid var(--border-color);
+        border-radius: 50%;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        font-weight: bold; color: var(--text-main); font-size: 14px;
+        z-index: 2;
+    }
+    .state-node span { position: absolute; top: 45px; font-size: 11px; font-weight: normal; color: var(--text-muted); white-space: nowrap; }
+</style>
+
+<script>
+    function resetAutomata() {
+        ['q0', 'q1', 'q2', 'qE'].forEach(id => {
+            document.getElementById(id).style.backgroundColor = 'var(--bg-card)';
+            document.getElementById(id).style.color = 'var(--text-main)';
+        });
+        document.getElementById('q0').style.backgroundColor = 'var(--primary)';
+        document.getElementById('q0').style.color = 'white';
+    }
+
+    function simularExito() {
+        resetAutomata();
+        const log = document.getElementById('log-automata');
+        log.innerHTML = `> Cadena de entrada: ['Pagar', 'Validar']\n\n`;
+        
+        setTimeout(() => {
+            document.getElementById('q0').style.backgroundColor = 'var(--bg-card)';
+            document.getElementById('q0').style.color = 'var(--text-main)';
+            document.getElementById('q1').style.backgroundColor = '#f59e0b'; // Naranja
+            document.getElementById('q1').style.color = 'white';
+            log.innerHTML += `δ(q0, 'Pagar') -> q1\n`;
+        }, 1000);
+
+        setTimeout(() => {
+            document.getElementById('q1').style.backgroundColor = 'var(--bg-card)';
+            document.getElementById('q1').style.color = 'var(--text-main)';
+            document.getElementById('q2').style.backgroundColor = '#10b981'; // Verde
+            document.getElementById('q2').style.color = 'white';
+            log.innerHTML += `δ(q1, 'Validar') -> q2\n\n> q2 es estado de aceptación. Transacción APROBADA.`;
+        }, 2000);
+    }
+
+    function simularFraude() {
+        resetAutomata();
+        const log = document.getElementById('log-automata');
+        log.innerHTML = `> ALERTA: Intento de forzar estado final directamente...\n> Cadena de entrada: ['Validar'] (desde q0)\n\n`;
+        
+        setTimeout(() => {
+            log.innerHTML += `δ(q0, 'Validar') -> UNDEFINED\n\n`;
+            log.innerHTML += `> Error: Transición no definida en el alfabeto del estado q0. \n> Bloqueo de seguridad activado por el AFD.`;
+        }, 1000);
+    }
+
+    function simularError() {
+        resetAutomata();
+        const log = document.getElementById('log-automata');
+        log.innerHTML = `> Cadena de entrada: ['Pagar', 'Rechazo']\n\n`;
+        
+        setTimeout(() => {
+            document.getElementById('q0').style.backgroundColor = 'var(--bg-card)';
+            document.getElementById('q0').style.color = 'var(--text-main)';
+            document.getElementById('q1').style.backgroundColor = '#f59e0b';
+            document.getElementById('q1').style.color = 'white';
+            log.innerHTML += `δ(q0, 'Pagar') -> q1\n`;
+        }, 1000);
+
+        setTimeout(() => {
+            document.getElementById('q1').style.backgroundColor = 'var(--bg-card)';
+            document.getElementById('q1').style.color = 'var(--text-main)';
+            document.getElementById('qE').style.backgroundColor = '#ef4444';
+            document.getElementById('qE').style.color = 'white';
+            log.innerHTML += `δ(q1, 'Rechazo') -> qE\n\n> qE es estado pozo. Transacción DENEGADA.`;
+        }, 2000);
+    }
+
+    resetAutomata();
+</script>
