@@ -1,45 +1,45 @@
 // Archivo: backend/server.js
+// Version portable - sin MySQL, funciona en cualquier computadora.
+
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
-const db = require('./config/db'); 
 
 const app = express();
 
-// --- 1. MIDDLEWARES (Traductores y Seguridad) ---
-// ¡EL ORDEN AQUÍ ES VITAL!
-app.use(cors()); 
-app.use(express.json()); // <--- ¡Esta línea traduce el correo y la contraseña!
+// --- 1. MIDDLEWARES ---
+app.use(cors());
+app.use(express.json());
 
-// --- 2. ARCHIVOS ESTÁTICOS (FRONTEND) ---
-// Esto permite que el servidor entregue los archivos HTML, CSS y JS
-const path = require('path');
+// --- 2. ARCHIVOS ESTATICOS (FRONTEND) ---
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // --- 3. RUTAS API ---
-// Tienen que ir obligatoriamente DESPUÉS de express.json()
 const authRoutes = require('./routes/authRoutes');
 app.use('/api/auth', authRoutes);
 
-// Ignorar la petición del favicon
+// Ignorar la peticion del favicon
 app.get('/favicon.ico', (req, res) => res.status(204).end());
-
-// Prueba de conexión a la base de datos
-db.query('SELECT 1')
-    .then(() => {
-        console.log('✅ Conexión a la base de datos MySQL exitosa.');
-    })
-    .catch((error) => {
-        console.error('❌ Error conectando a la base de datos:', error.message);
-    });
 
 // Ruta base
 app.get('/', (req, res) => {
-    res.send('¡El servidor está en línea y conectado!');
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor arrancado en http://localhost:${PORT}`);
+    console.log('');
+    console.log('==========================================');
+    console.log('   MATE SUPERIOR - Sistema de Gestion');
+    console.log('==========================================');
+    console.log('  Servidor corriendo en:');
+    console.log('  http://localhost:' + PORT);
+    console.log('');
+    console.log('  Usuario por defecto:');
+    console.log('  correo:    admin@matesuperior.com');
+    console.log('  password:  admin123');
+    console.log('==========================================');
+    console.log('');
 });

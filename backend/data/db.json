@@ -1,0 +1,10 @@
+﻿{
+  "usuarios": [
+    {
+      "id": 1,
+      "correo": "admin@matesuperior.com",
+      "password": "$2b$10$X.oGLlPvYM5Qn5Q2e.NKT.UomvGH8oSXqjT2c.VxdcR9oAVMFGbQS",
+      "rol": "admin"
+    }
+  ]
+}
