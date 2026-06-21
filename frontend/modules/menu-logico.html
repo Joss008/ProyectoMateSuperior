@@ -54,28 +54,36 @@
         { nombre: "Caldo de Gallina", fondo: false, mariscos: false, descuento: false, img: "🥣", precio: 15.00 }
     ];
 
-    function actualizarFiltros() {
+function actualizarFiltros() {
         const P = document.getElementById('chk-fondo').checked;
         const Q = document.getElementById('chk-mariscos').checked;
         const R = document.getElementById('chk-descuento').checked;
 
-        // Mostrar la lógica matemática de fondo
+        // Mostrar la lógica matemática de fondo de forma dinámica
         const eqDisplay = document.getElementById('ecuacion-display');
-        eqDisplay.innerHTML = `> P = Fondo: ${P}<br>> Q = Mariscos: ${Q}<br>> R = Descuento: ${R}<br><br>> EVAL: P AND (NOT Q OR R)<br>> RETURN RESULT SET`;
+        eqDisplay.innerHTML = `
+            > P = Filtro Fondo: ${P}<br>
+            > Q = Filtro Mariscos: ${Q}<br>
+            > R = Filtro Descuento: ${R}<br><br>
+            > EVAL: (NOT P OR Plato_P) AND (NOT Q OR Plato_Q) AND (NOT R OR Plato_R)<br>
+            > RETURN RESULT SET
+        `;
 
         const contenedor = document.getElementById('lista-platillos');
         contenedor.innerHTML = '';
 
         platillos.forEach(plato => {
-            let mostrar = true;
-            if(P || Q || R) {
-                 const plato_P = plato.fondo;
-                 const plato_Q = plato.mariscos;
-                 const plato_R = plato.descuento;
-                 
-                 // Evaluamos la lógica proposicional
-                 mostrar = plato_P && (!plato_Q || plato_R);
-            }
+            const plato_P = plato.fondo;
+            const plato_Q = plato.mariscos;
+            const plato_R = plato.descuento;
+            
+            // Evaluamos la lógica proposicional individual (Implicación)
+            const cumple_P = !P || plato_P;
+            const cumple_Q = !Q || plato_Q;
+            const cumple_R = !R || plato_R;
+
+            // Evaluamos la conjunción total (AND)
+            const mostrar = cumple_P && cumple_Q && cumple_R;
 
             if (mostrar) {
                 contenedor.innerHTML += `
@@ -84,9 +92,9 @@
                         <div style="flex-grow: 1;">
                             <h4 style="color: #111827; margin-bottom: 4px;">${plato.nombre}</h4>
                             <div style="display:flex; gap: 5px;">
-                                ${plato.fondo ? '<span class="badge blue">Fondo</span>' : '<span class="badge">Entrada</span>'}
-                                ${plato.mariscos ? '<span class="badge orange">Mariscos</span>' : ''}
-                                ${plato.descuento ? '<span class="badge green">Promo</span>' : ''}
+                                ${plato.fondo ? '<span class="badge" style="background:#dbeafe; color:#1e40af; padding:2px 8px; border-radius:4px; font-size:12px;">Fondo</span>' : '<span class="badge" style="background:#f3f4f6; color:#374151; padding:2px 8px; border-radius:4px; font-size:12px;">Entrada</span>'}
+                                ${plato.mariscos ? '<span class="badge" style="background:#ffedd5; color:#c2410c; padding:2px 8px; border-radius:4px; font-size:12px;">Mariscos</span>' : ''}
+                                ${plato.descuento ? '<span class="badge" style="background:#dcfce3; color:#166534; padding:2px 8px; border-radius:4px; font-size:12px;">Promo</span>' : ''}
                             </div>
                         </div>
                         <div style="font-weight: 700; font-size: 18px; color: #111827;">S/ ${plato.precio.toFixed(2)}</div>

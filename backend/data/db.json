@@ -1,10 +1,16 @@
-﻿{
+{
   "usuarios": [
     {
       "id": 1,
+      "correo": "jeffcarbajalvicente@gmail.com",
+      "password": "$2b$10$S.6r3.LkP0yF6NOWF2hL9ekqB81faZApK3IGi9YG/wvL/ZO46pi56",
+      "rol": "cliente"
+    },
+    {
+      "id": 2,
       "correo": "admin@matesuperior.com",
-      "password": "$2b$10$X.oGLlPvYM5Qn5Q2e.NKT.UomvGH8oSXqjT2c.VxdcR9oAVMFGbQS",
-      "rol": "admin"
+      "password": "$2b$10$9H5tg80MlIL3gOWZq3J9pemx56bf4JPytV9I2RYouxhuE8OkXdmRe",
+      "rol": "cliente"
     }
   ]
 }
