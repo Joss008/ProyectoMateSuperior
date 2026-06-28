@@ -46,7 +46,7 @@
     function buscarSugerencia(producto, profundidad, logElement) {
         // Caso Base 1: Límite de profundidad
         if (profundidad >= max_profundidad) {
-            logElement.innerHTML += `  [Caso Base] Profundidad máx (${max_profundidad}) alcanzada. Retornando.\n`;
+            logElement.innerHTML += `${"  ".repeat(profundidad)}[Caso Base] Profundidad máx (${max_profundidad}) alcanzada. Retornando.\n`;
             return;
         }
         
@@ -54,7 +54,7 @@
         
         // Caso Base 2: No hay más relaciones
         if (!data || !data.relacionado) {
-            logElement.innerHTML += `  [Caso Base] '${producto}' no tiene más relaciones. Retornando.\n`;
+            logElement.innerHTML += `${"  ".repeat(profundidad)}[Caso Base] '${producto}' no tiene más relaciones. Retornando.\n`;
             return;
         }
 

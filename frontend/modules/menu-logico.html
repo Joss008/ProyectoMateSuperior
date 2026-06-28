@@ -11,34 +11,47 @@
         <div style="margin-bottom: 15px;">
             <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                 <input type="checkbox" id="chk-fondo" onchange="actualizarFiltros()"> 
-                <span>Solo Platos de Fondo</span>
+                <span>Solo Platos de Fondo (P)</span>
             </label>
         </div>
         <div style="margin-bottom: 15px;">
             <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                 <input type="checkbox" id="chk-mariscos" onchange="actualizarFiltros()"> 
-                <span>Contiene Mariscos (Alerta Alergia)</span>
+                <span>Excluir Mariscos [Alerta Alergia] (Q)</span>
             </label>
         </div>
         <div style="margin-bottom: 25px;">
             <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                 <input type="checkbox" id="chk-descuento" onchange="actualizarFiltros()"> 
-                <span>Aplicar Descuento Especial</span>
+                <span>Aplicar Descuento Especial (R)</span>
             </label>
         </div>
 
         <!-- El log matemático disfrazado de "Consola de Diagnóstico" -->
         <div style="border-top: 1px solid #e5e7eb; padding-top: 15px;">
-            <h5 style="color: #9ca3af; font-size: 12px; text-transform: uppercase;">Diagnóstico del Servidor (Lógica)</h5>
+            <h5 style="color: #9ca3af; font-size: 12px; text-transform: uppercase; margin-bottom: 5px;">Diagnóstico del Servidor (Lógica)</h5>
             <div class="math-log" id="ecuacion-display">
                 // Evaluando regla de negocio...
+            </div>
+        </div>
+
+        <!-- Diagrama de Venn Interactivo -->
+        <div style="border-top: 1px solid #e5e7eb; padding-top: 15px; margin-top: 15px; display: flex; flex-direction: column; align-items: center;">
+            <h5 style="color: #9ca3af; font-size: 12px; text-transform: uppercase; margin-bottom: 15px; width: 100%;">Diagrama de Venn</h5>
+            <div class="venn-container" style="position: relative; width: 180px; height: 120px;">
+                <div id="venn-f" style="position: absolute; width: 75px; height: 75px; border-radius: 50%; border: 2px solid #3b82f6; background: rgba(59, 130, 246, 0.05); left: 20px; top: 10px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: #3b82f6; transition: all 0.3s;">F</div>
+                <div id="venn-m" style="position: absolute; width: 75px; height: 75px; border-radius: 50%; border: 2px solid #ea580c; background: rgba(234, 88, 12, 0.05); left: 85px; top: 10px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: #ea580c; transition: all 0.3s;">M</div>
+                <div id="venn-d" style="position: absolute; width: 75px; height: 75px; border-radius: 50%; border: 2px solid #10b981; background: rgba(16, 185, 129, 0.05); left: 52px; top: 45px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: #10b981; transition: all 0.3s;">D</div>
+            </div>
+            <div style="font-size: 10px; color: var(--text-muted); margin-top: 10px; text-align: center; line-height: 1.3;">
+                F: Fondo | M: Mariscos | D: Descuento (Promo)
             </div>
         </div>
     </div>
 
     <!-- Resultados del Menú -->
     <div class="card" style="flex: 2; background: #f9fafb; border: none;">
-        <h4 style="margin-bottom: 15px; font-size: 16px;">Catálogo Disponible</h4>
+        <h4 style="margin-bottom: 15px; font-size: 16px; color: #1f2937;">Catálogo Disponible</h4>
         <div id="lista-platillos" style="display: grid; grid-template-columns: 1fr; gap: 10px;">
             <!-- Se llena con JS -->
         </div>
@@ -54,18 +67,26 @@
         { nombre: "Caldo de Gallina", fondo: false, mariscos: false, descuento: false, img: "🥣", precio: 15.00 }
     ];
 
-function actualizarFiltros() {
+    function actualizarFiltros() {
         const P = document.getElementById('chk-fondo').checked;
         const Q = document.getElementById('chk-mariscos').checked;
         const R = document.getElementById('chk-descuento').checked;
+
+        // Actualizar diagrama de Venn
+        document.getElementById('venn-f').style.background = P ? 'rgba(59, 130, 246, 0.3)' : 'rgba(59, 130, 246, 0.05)';
+        document.getElementById('venn-f').style.borderWidth = P ? '3px' : '2px';
+        document.getElementById('venn-m').style.background = Q ? 'rgba(234, 88, 12, 0.3)' : 'rgba(234, 88, 12, 0.05)';
+        document.getElementById('venn-m').style.borderWidth = Q ? '3px' : '2px';
+        document.getElementById('venn-d').style.background = R ? 'rgba(16, 185, 129, 0.3)' : 'rgba(16, 185, 129, 0.05)';
+        document.getElementById('venn-d').style.borderWidth = R ? '3px' : '2px';
 
         // Mostrar la lógica matemática de fondo de forma dinámica
         const eqDisplay = document.getElementById('ecuacion-display');
         eqDisplay.innerHTML = `
             > P = Filtro Fondo: ${P}<br>
-            > Q = Filtro Mariscos: ${Q}<br>
+            > Q = Excluir Mariscos: ${Q}<br>
             > R = Filtro Descuento: ${R}<br><br>
-            > EVAL: (NOT P OR Plato_P) AND (NOT Q OR Plato_Q) AND (NOT R OR Plato_R)<br>
+            > EVAL: (NOT P OR Plato_P) AND (NOT Q OR NOT Plato_Q) AND (NOT R OR Plato_R)<br>
             > RETURN RESULT SET
         `;
 
@@ -77,9 +98,10 @@ function actualizarFiltros() {
             const plato_Q = plato.mariscos;
             const plato_R = plato.descuento;
             
-            // Evaluamos la lógica proposicional individual (Implicación)
+            // Evaluamos la lógica proposicional (Implicación)
             const cumple_P = !P || plato_P;
-            const cumple_Q = !Q || plato_Q;
+            // Q significa "Excluir mariscos". Si Q está activo, el plato no debe tener mariscos.
+            const cumple_Q = !Q || !plato_Q; 
             const cumple_R = !R || plato_R;
 
             // Evaluamos la conjunción total (AND)

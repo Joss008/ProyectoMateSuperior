@@ -1,4 +1,4 @@
-﻿// backend/config/jsonDb.js
+// backend/config/jsonDb.js
 // Reemplaza MySQL con un archivo JSON local.
 // Funciona sin instalar ningun servicio externo.
 
@@ -36,6 +36,14 @@ const jsonDb = {
         db.usuarios.push(usuarioConId);
         guardarDB(db);
         return usuarioConId;
+    },
+    updateUsuario: (id, datosActualizados) => {
+        const db = leerDB();
+        const index = db.usuarios.findIndex(u => u.id === id);
+        if (index === -1) return null;
+        db.usuarios[index] = { ...db.usuarios[index], ...datosActualizados };
+        guardarDB(db);
+        return db.usuarios[index];
     }
 };
 

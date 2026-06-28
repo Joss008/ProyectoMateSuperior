@@ -13,4 +13,7 @@ router.post('/register', authController.register);
 // Ruta para la recuperación de contraseña simulada
 router.post('/forgot-password', authController.forgotPassword);
 
+// Ruta real para guardar la nueva contraseña restablecida
+router.post('/reset-password', authController.resetPassword);
+
 module.exports = router;

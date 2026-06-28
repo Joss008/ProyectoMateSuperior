@@ -11,18 +11,18 @@
             
             <svg width="100%" height="100%" style="position: absolute; top:0; left:0;">
                 <!-- q0 to q1 -->
-                <line x1="80" y1="125" x2="200" y2="125" stroke="var(--border-color)" stroke-width="3" id="line-0-1" />
-                <polygon points="190,120 200,125 190,130" fill="var(--border-color)" id="arrow-0-1" />
+                <line x1="80" y1="125" x2="200" y2="125" stroke="var(--border-color)" stroke-width="3" id="line-0-1" style="transition: stroke 0.3s, stroke-width 0.3s;" />
+                <polygon points="190,120 200,125 190,130" fill="var(--border-color)" id="arrow-0-1" style="transition: fill 0.3s;" />
                 <text x="140" y="115" fill="var(--text-muted)" font-size="10" text-anchor="middle">"Pagar"</text>
 
                 <!-- q1 to q2 -->
-                <line x1="240" y1="125" x2="360" y2="125" stroke="var(--border-color)" stroke-width="3" id="line-1-2" />
-                <polygon points="350,120 360,125 350,130" fill="var(--border-color)" id="arrow-1-2" />
+                <line x1="240" y1="125" x2="360" y2="125" stroke="var(--border-color)" stroke-width="3" id="line-1-2" style="transition: stroke 0.3s, stroke-width 0.3s;" />
+                <polygon points="350,120 360,125 350,130" fill="var(--border-color)" id="arrow-1-2" style="transition: fill 0.3s;" />
                 <text x="300" y="115" fill="var(--text-muted)" font-size="10" text-anchor="middle">"Validar"</text>
 
                 <!-- q1 to qError -->
-                <line x1="220" y1="145" x2="220" y2="200" stroke="var(--border-color)" stroke-width="3" id="line-1-e" />
-                <polygon points="215,190 220,200 225,190" fill="var(--border-color)" id="arrow-1-e" />
+                <line x1="220" y1="145" x2="220" y2="200" stroke="var(--border-color)" stroke-width="3" id="line-1-e" style="transition: stroke 0.3s, stroke-width 0.3s;" />
+                <polygon points="215,190 220,200 225,190" fill="var(--border-color)" id="arrow-1-e" style="transition: fill 0.3s;" />
                 <text x="250" y="180" fill="var(--text-muted)" font-size="10" text-anchor="middle">"Rechazo"</text>
             </svg>
 
@@ -59,18 +59,29 @@
         align-items: center; justify-content: center;
         font-weight: bold; color: var(--text-main); font-size: 14px;
         z-index: 2;
+        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
     }
     .state-node span { position: absolute; top: 45px; font-size: 11px; font-weight: normal; color: var(--text-muted); white-space: nowrap; }
 </style>
 
 <script>
     function resetAutomata() {
+        // Restaurar colores de nodos
         ['q0', 'q1', 'q2', 'qE'].forEach(id => {
             document.getElementById(id).style.backgroundColor = 'var(--bg-card)';
             document.getElementById(id).style.color = 'var(--text-main)';
         });
         document.getElementById('q0').style.backgroundColor = 'var(--primary)';
         document.getElementById('q0').style.color = 'white';
+
+        // Restaurar colores de líneas y flechas del SVG
+        ['line-0-1', 'line-1-2', 'line-1-e'].forEach(id => {
+            document.getElementById(id).setAttribute('stroke', 'var(--border-color)');
+            document.getElementById(id).setAttribute('stroke-width', '3');
+        });
+        ['arrow-0-1', 'arrow-1-2', 'arrow-1-e'].forEach(id => {
+            document.getElementById(id).setAttribute('fill', 'var(--border-color)');
+        });
     }
 
     function simularExito() {
@@ -83,6 +94,12 @@
             document.getElementById('q0').style.color = 'var(--text-main)';
             document.getElementById('q1').style.backgroundColor = '#f59e0b'; // Naranja
             document.getElementById('q1').style.color = 'white';
+            
+            // Iluminar camino q0 -> q1
+            document.getElementById('line-0-1').setAttribute('stroke', '#f59e0b');
+            document.getElementById('line-0-1').setAttribute('stroke-width', '5');
+            document.getElementById('arrow-0-1').setAttribute('fill', '#f59e0b');
+            
             log.innerHTML += `δ(q0, 'Pagar') -> q1\n`;
         }, 1000);
 
@@ -91,6 +108,12 @@
             document.getElementById('q1').style.color = 'var(--text-main)';
             document.getElementById('q2').style.backgroundColor = '#10b981'; // Verde
             document.getElementById('q2').style.color = 'white';
+            
+            // Iluminar camino q1 -> q2
+            document.getElementById('line-1-2').setAttribute('stroke', '#10b981');
+            document.getElementById('line-1-2').setAttribute('stroke-width', '5');
+            document.getElementById('arrow-1-2').setAttribute('fill', '#10b981');
+            
             log.innerHTML += `δ(q1, 'Validar') -> q2\n\n> q2 es estado de aceptación. Transacción APROBADA.`;
         }, 2000);
     }
@@ -116,6 +139,12 @@
             document.getElementById('q0').style.color = 'var(--text-main)';
             document.getElementById('q1').style.backgroundColor = '#f59e0b';
             document.getElementById('q1').style.color = 'white';
+            
+            // Iluminar camino q0 -> q1
+            document.getElementById('line-0-1').setAttribute('stroke', '#f59e0b');
+            document.getElementById('line-0-1').setAttribute('stroke-width', '5');
+            document.getElementById('arrow-0-1').setAttribute('fill', '#f59e0b');
+            
             log.innerHTML += `δ(q0, 'Pagar') -> q1\n`;
         }, 1000);
 
@@ -124,6 +153,12 @@
             document.getElementById('q1').style.color = 'var(--text-main)';
             document.getElementById('qE').style.backgroundColor = '#ef4444';
             document.getElementById('qE').style.color = 'white';
+            
+            // Iluminar camino q1 -> qE
+            document.getElementById('line-1-e').setAttribute('stroke', '#ef4444');
+            document.getElementById('line-1-e').setAttribute('stroke-width', '5');
+            document.getElementById('arrow-1-e').setAttribute('fill', '#ef4444');
+            
             log.innerHTML += `δ(q1, 'Rechazo') -> qE\n\n> qE es estado pozo. Transacción DENEGADA.`;
         }, 2000);
     }

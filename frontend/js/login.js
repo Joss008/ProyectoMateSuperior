@@ -12,7 +12,7 @@ document.getElementById('formularioLogin').addEventListener('submit', async (eve
 
     try {
         // 3. Hacemos la llamada "Fetch" a nuestro backend real
-        const respuesta = await fetch('http://localhost:3000/api/auth/login', {
+        const respuesta = await fetch('/api/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json' // Le decimos al servidor que enviamos datos JSON

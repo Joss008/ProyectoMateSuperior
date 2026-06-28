@@ -4,7 +4,7 @@ document.getElementById('formularioRecuperar').addEventListener('submit', async 
     const emailInput = document.getElementById('email').value;
 
     try {
-        const respuesta = await fetch('http://localhost:3000/api/auth/forgot-password', {
+        const respuesta = await fetch('/api/auth/forgot-password', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

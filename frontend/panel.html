@@ -46,7 +46,13 @@
     <main class="main-content">
         <!-- Barra Superior -->
         <header class="topbar">
-            <h2 id="welcome-message">...</h2>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <!-- Botón de Menú Hamburguesa para Móvil -->
+                <button id="btn-hamburger" class="hamburger-menu" onclick="toggleSidebar()" title="Abrir Menú">
+                    ☰
+                </button>
+                <h2 id="welcome-message">...</h2>
+            </div>
             <div class="user-profile">
                 <!-- Botón Modo Claro/Oscuro -->
                 <div class="theme-switch" id="btn-theme" onclick="toggleTheme()" title="Cambiar Tema">
@@ -62,7 +68,7 @@
                 <h3>Resumen de Hoy</h3>
                 <p>Bienvenido al laboratorio matemático y sistema de gestión de Mate Superior.</p>
             </div>
-            <div class="cards-container" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+            <div class="cards-container">
                 <div class="card">
                     <h4 style="color: var(--text-muted); font-size: 14px; margin-bottom: 10px;">Ventas del Día</h4>
                     <p style="font-size: 28px; font-weight: 700; color: var(--text-main);">S/ 1,240.00</p>
@@ -78,6 +84,9 @@
             </div>
         </div>
     </main>
+
+    <!-- Overlay para cerrar el menú en móvil -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
     <script src="js/panel.js"></script>
     <script>

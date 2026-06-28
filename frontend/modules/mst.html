@@ -82,12 +82,21 @@
         const log = document.getElementById('log-mst');
         log.innerHTML = `> Iniciando Algoritmo de Kruskal (MST)...\n> Ordenando aristas por peso de menor a mayor:\n\n`;
         
-        // Simulación visual paso a paso de Kruskal
+        // Resetear visualización de aristas a gris
+        const edges = document.querySelectorAll('.mst-edge');
+        edges.forEach(edge => {
+            edge.setAttribute('stroke', 'var(--border-color)');
+            edge.setAttribute('stroke-width', '2');
+        });
+
+        // Pasos ordenados por peso (incluye descartes por ciclo)
         const pasos = [
-            { id: 'e-s-o', costo: 1, desc: 'Sur - Oeste' },
-            { id: 'e-c-s', costo: 2, desc: 'Central - Sur' },
-            { id: 'e-c-e', costo: 3, desc: 'Central - Este' },
-            { id: 'e-c-n', costo: 4, desc: 'Central - Norte' }
+            { id: 'e-s-o', costo: 1, desc: 'Sur - Oeste', accion: 'add' },
+            { id: 'e-c-s', costo: 2, desc: 'Central - Sur', accion: 'add' },
+            { id: 'e-c-e', costo: 3, desc: 'Central - Este', accion: 'add' },
+            { id: 'e-c-n', costo: 4, desc: 'Central - Norte', accion: 'add' },
+            { id: 'e-c-o', costo: 5, desc: 'Central - Oeste', accion: 'discard', ciclo: 'Central-Sur-Oeste-Central' },
+            { id: 'e-n-e', costo: 6, desc: 'Norte - Este', accion: 'discard', ciclo: 'Norte-Central-Este-Norte' }
         ];
 
         let costoTotal = 0;
@@ -95,16 +104,31 @@
 
         pasos.forEach((paso, index) => {
             setTimeout(() => {
-                document.getElementById(paso.id).setAttribute('stroke', 'var(--accent)');
-                document.getElementById(paso.id).setAttribute('stroke-width', '5');
-                costoTotal += paso.costo;
-                log.innerHTML += `Agregando arista ${paso.desc} ($${paso.costo}M) al MST...\n`;
+                const el = document.getElementById(paso.id);
+                if (paso.accion === 'add') {
+                    el.setAttribute('stroke', 'var(--accent)');
+                    el.setAttribute('stroke-width', '5');
+                    costoTotal += paso.costo;
+                    log.innerHTML += `✓ Agregando arista ${paso.desc} ($${paso.costo}M) -> No forma ciclo.\n`;
+                } else {
+                    // Iluminar temporalmente en rojo para mostrar ciclo
+                    el.setAttribute('stroke', '#ef4444');
+                    el.setAttribute('stroke-width', '4');
+                    log.innerHTML += `✗ Descartando arista ${paso.desc} ($${paso.costo}M) -> Forma ciclo: ${paso.ciclo}.\n`;
+                    
+                    setTimeout(() => {
+                        el.setAttribute('stroke', 'var(--border-color)');
+                        el.setAttribute('stroke-width', '2');
+                    }, 800);
+                }
                 
                 if(index === pasos.length - 1) {
-                    log.innerHTML += `\n> Árbol Mínimo completado.\n> Nuevo costo total de interconexión: <span style="color:var(--accent); font-weight:bold; font-size:16px;">$${costoTotal}M</span>\n> Ahorro logrado: $11M`;
+                    setTimeout(() => {
+                        log.innerHTML += `\n> Árbol Mínimo completado.\n> Nuevo costo total de interconexión: <span style="color:var(--accent); font-weight:bold; font-size:16px;">$${costoTotal}M</span>\n> Ahorro logrado: $11M (Costo original: $21M)`;
+                    }, 1000);
                 }
             }, tiempo);
-            tiempo += 1000;
+            tiempo += 1200;
         });
     }
 </script>

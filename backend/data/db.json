@@ -11,6 +11,12 @@
       "correo": "admin@matesuperior.com",
       "password": "$2b$10$9H5tg80MlIL3gOWZq3J9pemx56bf4JPytV9I2RYouxhuE8OkXdmRe",
       "rol": "cliente"
+    },
+    {
+      "id": 3,
+      "correo": "2511130064@undc.edu.pe",
+      "password": "$2b$10$kXj9VZNjSDHVq6xIwtws4eX/4ZDSws5YzV.YPYefdRL245E4OxOka",
+      "rol": "cliente"
     }
   ]
 }

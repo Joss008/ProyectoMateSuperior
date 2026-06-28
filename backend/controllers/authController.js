@@ -95,7 +95,7 @@ const forgotPassword = async (req, res) => {
         console.log('\n--- SIMULACION DE CORREO ---');
         console.log('Para: ' + correo);
         console.log('Enlace de recuperacion (valido 15min):');
-        console.log('http://localhost:3000/api/auth/reset-password?token=' + resetToken);
+        console.log('http://localhost:3000/reset-password.html?token=' + resetToken);
         console.log('----------------------------\n');
 
         res.json({ mensaje: 'Si el correo existe en nuestro sistema, hemos enviado un enlace de recuperacion.' });
@@ -105,4 +105,37 @@ const forgotPassword = async (req, res) => {
     }
 };
 
-module.exports = { login, register, forgotPassword };
+// Función real para guardar la nueva contraseña restablecida
+const resetPassword = async (req, res) => {
+    const { token, password } = req.body;
+
+    if (!token || !password) {
+        return res.status(400).json({ mensaje: 'Por favor, proporciona token y contraseña' });
+    }
+
+    try {
+        // 1. Verificar y decodificar el token
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const usuarioId = decoded.id;
+
+        // 2. Encriptar la nueva contraseña con bcrypt
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // 3. Actualizar la contraseña en la base de datos JSON
+        const actualizado = jsonDb.updateUsuario(usuarioId, { password: hashedPassword });
+
+        if (!actualizado) {
+            return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+        }
+
+        res.json({ mensaje: 'Contraseña restablecida correctamente' });
+    } catch (error) {
+        console.error('Error al restablecer contraseña:', error);
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({ mensaje: 'El enlace ha expirado. Por favor, solicita uno nuevo.' });
+        }
+        res.status(401).json({ mensaje: 'Token no válido' });
+    }
+};
+
+module.exports = { login, register, forgotPassword, resetPassword };

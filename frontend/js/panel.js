@@ -47,6 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Función para cargar módulos dinámicamente sin recargar la página
 window.cargarModulo = async function(modulo) {
+    // Cerrar barra lateral en móvil al cargar módulo
+    document.body.classList.remove('sidebar-open');
+    
     const contenedor = document.getElementById('dynamic-content');
     
     if (modulo === 'inicio') {
@@ -84,4 +87,9 @@ window.cargarModulo = async function(modulo) {
         console.error('Error cargando módulo:', error);
         contenedor.innerHTML = `<p style="color:red;">Error cargando el módulo: ${modulo}</p>`;
     }
+};
+
+// Alternar barra lateral en móvil
+window.toggleSidebar = function() {
+    document.body.classList.toggle('sidebar-open');
 };
