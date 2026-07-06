@@ -1,0 +1,134 @@
+<div class="content-header">
+    <h3>Expansión Estratégica de Locales</h3>
+    <p>Reducción de costos de logística utilizando el <strong>Algoritmo de Prim/Kruskal (Árbol de Expansión Mínima - MST)</strong>.</p>
+</div>
+
+<div style="display: flex; gap: 20px;">
+    <!-- Mapa de la Ciudad (Grafo Completo) -->
+    <div class="card" style="flex: 2; padding: 0; overflow: hidden; display: flex; flex-direction: column;">
+        <div style="padding: 15px 20px; background: var(--bg-sidebar); border-bottom: 1px solid var(--border-color);">
+            <h4 style="font-size: 16px; color: var(--text-main);">Red de Interconexión Posible</h4>
+        </div>
+        
+        <div style="flex-grow: 1; background: var(--bg-body); position: relative; min-height: 400px;" id="mst-container">
+            <svg width="100%" height="100%" style="position: absolute; top:0; left:0;">
+                <!-- Aristas iniciales en gris -->
+                <!-- Central a Norte -->
+                <line x1="250" y1="200" x2="250" y2="80" stroke="var(--border-color)" stroke-width="2" class="mst-edge" id="e-c-n" />
+                <text x="260" y="140" fill="var(--text-muted)" font-size="12">$4M</text>
+                
+                <!-- Central a Sur -->
+                <line x1="250" y1="200" x2="250" y2="320" stroke="var(--border-color)" stroke-width="2" class="mst-edge" id="e-c-s" />
+                <text x="260" y="260" fill="var(--text-muted)" font-size="12">$2M</text>
+                
+                <!-- Central a Este -->
+                <line x1="250" y1="200" x2="400" y2="200" stroke="var(--border-color)" stroke-width="2" class="mst-edge" id="e-c-e" />
+                <text x="325" y="190" fill="var(--text-muted)" font-size="12">$3M</text>
+                
+                <!-- Central a Oeste -->
+                <line x1="250" y1="200" x2="100" y2="200" stroke="var(--border-color)" stroke-width="2" class="mst-edge" id="e-c-o" />
+                <text x="175" y="190" fill="var(--text-muted)" font-size="12">$5M</text>
+
+                <!-- Conexiones exteriores (Caras) -->
+                <line x1="250" y1="80" x2="400" y2="200" stroke="var(--border-color)" stroke-width="2" class="mst-edge" id="e-n-e" />
+                <text x="340" y="130" fill="var(--text-muted)" font-size="12">$6M</text>
+
+                <line x1="250" y1="320" x2="100" y2="200" stroke="var(--border-color)" stroke-width="2" class="mst-edge" id="e-s-o" />
+                <text x="160" y="280" fill="var(--text-muted)" font-size="12">$1M</text>
+            </svg>
+
+            <!-- Nodos -->
+            <div class="map-node central" style="left: 230px; top: 180px;">C<span>Sede Central</span></div>
+            <div class="map-node" style="left: 230px; top: 60px;">N<span>Norte</span></div>
+            <div class="map-node" style="left: 230px; top: 300px;">S<span>Sur</span></div>
+            <div class="map-node" style="left: 380px; top: 180px;">E<span>Este</span></div>
+            <div class="map-node" style="left: 80px; top: 180px;">O<span>Oeste</span></div>
+        </div>
+    </div>
+
+    <!-- Panel de Control del Algoritmo -->
+    <div class="card" style="flex: 1; display: flex; flex-direction: column;">
+        <h4 style="margin-bottom: 5px; font-size: 16px; color: var(--text-main);">Planificador de Presupuesto</h4>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Problema: Conectar todos los locales nuevos a la Sede Central con el menor costo de carreteras/proveedores.</p>
+        
+        <button onclick="ejecutarKruskal()" class="btn btn-primary" style="margin-bottom: 20px;">Encontrar Árbol de Expansión Mínima</button>
+        
+        <div class="math-log" id="log-mst" style="flex-grow: 1;">
+> Grafo cargado (5 vértices, 6 aristas).<br>
+> Costo total si se construyen todas las conexiones: <span style="color:#ef4444">$21M</span><br><br>
+> Esperando ejecución del algoritmo...
+        </div>
+    </div>
+</div>
+
+<style>
+    .map-node {
+        position: absolute;
+        width: 40px; height: 40px;
+        background: var(--bg-card);
+        border: 2px solid var(--text-muted);
+        border-radius: 50%;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        font-weight: bold; color: var(--text-main); font-size: 16px;
+        z-index: 2;
+    }
+    .map-node span { position: absolute; top: 45px; font-size: 11px; font-weight: normal; color: var(--text-muted); white-space: nowrap; }
+    .map-node.central { border-color: var(--primary); color: var(--primary); }
+</style>
+
+<script>
+    function ejecutarKruskal() {
+        const log = document.getElementById('log-mst');
+        log.innerHTML = `> Iniciando Algoritmo de Kruskal (MST)...\n> Ordenando aristas por peso de menor a mayor:\n\n`;
+        
+        // Resetear visualización de aristas a gris
+        const edges = document.querySelectorAll('.mst-edge');
+        edges.forEach(edge => {
+            edge.setAttribute('stroke', 'var(--border-color)');
+            edge.setAttribute('stroke-width', '2');
+        });
+
+        // Pasos ordenados por peso (incluye descartes por ciclo)
+        const pasos = [
+            { id: 'e-s-o', costo: 1, desc: 'Sur - Oeste', accion: 'add' },
+            { id: 'e-c-s', costo: 2, desc: 'Central - Sur', accion: 'add' },
+            { id: 'e-c-e', costo: 3, desc: 'Central - Este', accion: 'add' },
+            { id: 'e-c-n', costo: 4, desc: 'Central - Norte', accion: 'add' },
+            { id: 'e-c-o', costo: 5, desc: 'Central - Oeste', accion: 'discard', ciclo: 'Central-Sur-Oeste-Central' },
+            { id: 'e-n-e', costo: 6, desc: 'Norte - Este', accion: 'discard', ciclo: 'Norte-Central-Este-Norte' }
+        ];
+
+        let costoTotal = 0;
+        let tiempo = 1000;
+
+        pasos.forEach((paso, index) => {
+            setTimeout(() => {
+                const el = document.getElementById(paso.id);
+                if (paso.accion === 'add') {
+                    el.setAttribute('stroke', 'var(--accent)');
+                    el.setAttribute('stroke-width', '5');
+                    costoTotal += paso.costo;
+                    log.innerHTML += `✓ Agregando arista ${paso.desc} ($${paso.costo}M) -> No forma ciclo.\n`;
+                } else {
+                    // Iluminar temporalmente en rojo para mostrar ciclo
+                    el.setAttribute('stroke', '#ef4444');
+                    el.setAttribute('stroke-width', '4');
+                    log.innerHTML += `✗ Descartando arista ${paso.desc} ($${paso.costo}M) -> Forma ciclo: ${paso.ciclo}.\n`;
+                    
+                    setTimeout(() => {
+                        el.setAttribute('stroke', 'var(--border-color)');
+                        el.setAttribute('stroke-width', '2');
+                    }, 800);
+                }
+                
+                if(index === pasos.length - 1) {
+                    setTimeout(() => {
+                        log.innerHTML += `\n> Árbol Mínimo completado.\n> Nuevo costo total de interconexión: <span style="color:var(--accent); font-weight:bold; font-size:16px;">$${costoTotal}M</span>\n> Ahorro logrado: $11M (Costo original: $21M)`;
+                    }, 1000);
+                }
+            }, tiempo);
+            tiempo += 1200;
+        });
+    }
+</script>

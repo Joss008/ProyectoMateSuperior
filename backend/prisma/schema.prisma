@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("CLIENT") // CLIENT, DRIVER, ADMIN
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  clientOrders Order[] @relation("ClientOrders")
+  driverOrders Order[] @relation("DriverOrders")
+}
+
+model Order {
+  id        Int      @id @default(autoincrement())
+  status    String   @default("PENDING") // PENDING, ROUTING, IN_TRANSIT, DELIVERED, CANCELLED
+  total     Float
+  location  String   // E.g., "A", "B", "C" for graph nodes or actual coordinates
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  clientId  Int
+  client    User     @relation("ClientOrders", fields: [clientId], references: [id])
+  
+  driverId  Int?
+  driver    User?    @relation("DriverOrders", fields: [driverId], references: [id])
+}
+
+model Coupon {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  discount  Float
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}

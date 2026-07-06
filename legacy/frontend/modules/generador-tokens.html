@@ -1,0 +1,95 @@
+<div class="content-header">
+    <h3>Campaña de Cupones Seguros</h3>
+    <p>Generador de códigos promocionales protegidos criptográficamente mediante <strong>Permutaciones Matemáticas</strong>.</p>
+</div>
+
+<div style="display: flex; gap: 20px;">
+    <!-- Configuración Comercial -->
+    <div class="card" style="flex: 1;">
+        <h4 style="margin-bottom: 15px; font-size: 16px;">Parámetros del Cupón</h4>
+        
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-size: 13px; color: #6b7280; margin-bottom: 5px;">Longitud del código (caracteres):</label>
+            <input type="number" id="token-length" value="6" min="4" max="12" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px;">
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 13px; color: #6b7280; margin-bottom: 5px;">Complejidad (Alfabeto):</label>
+            <select id="token-alphabet" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px;">
+                <option value="10">Numérico Básico (PIN de 0-9)</option>
+                <option value="26">Letras Mayúsculas (A-Z)</option>
+                <option value="36" selected>Alfanumérico Completo (A-Z, 0-9)</option>
+            </select>
+        </div>
+        
+        <button onclick="generarToken()" class="btn btn-primary" style="width: 100%;">Generar Lote de Cupones</button>
+    </div>
+
+    <!-- Panel de Diagnóstico -->
+    <div class="card" style="flex: 1; background: #1f2937; color: white; border: none;">
+        <h4 style="margin-bottom: 15px; font-size: 16px; color: #9ca3af; text-transform: uppercase;">Diagnóstico de Seguridad</h4>
+        
+        <p style="font-size: 13px; color: #d1d5db;">Para evitar ataques de fuerza bruta, el sistema calcula las variaciones sin repetición posibles con la fórmula:</p>
+        <p style="font-size: 18px; color: #f59e0b; margin-top: 10px; font-family: 'Times New Roman', serif;"><i>V(n, k) = n! / (n - k)!</i></p>
+        
+        <div class="math-log" id="math-calculation" style="background: rgba(0,0,0,0.3); border: none; margin-top: 20px;">
+            <!-- Cálculo aquí -->
+        </div>
+        
+        <div style="margin-top: 25px; text-align: center; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 8px;">
+            <span style="font-size: 12px; color: #9ca3af; text-transform: uppercase;">Cupón Muestra Generado:</span><br>
+            <strong id="generated-token" style="font-size: 36px; letter-spacing: 8px; color: #10b981; display: inline-block; margin-top: 10px;">------</strong>
+        </div>
+    </div>
+</div>
+
+<script>
+    function factorialBig(n) {
+        if (n === 0n || n === 1n) return 1n;
+        let res = 1n;
+        for (let i = 2n; i <= n; i++) res *= i;
+        return res;
+    }
+
+    function generarToken() {
+        const k = parseInt(document.getElementById('token-length').value);
+        const nSelect = parseInt(document.getElementById('token-alphabet').value);
+        
+        // Evitar crasheos
+        if(k > nSelect) {
+            alert("La longitud no puede ser mayor al alfabeto si no hay repetición.");
+            return;
+        }
+
+        const nBig = BigInt(nSelect);
+        const kBig = BigInt(k);
+        const totalCombinaciones = factorialBig(nBig) / factorialBig(nBig - kBig);
+
+        document.getElementById('math-calculation').innerHTML = `
+> Parámetros:<br>
+  n (Tamaño de Alfabeto) = ${nSelect}<br>
+  k (Longitud Solicitada) = ${k}<br>
+<br>
+> Calculando V(${nSelect}, ${k})...<br>
+> Total de combinaciones únicas:<br>
+  <span style="color: #60a5fa;">${totalCombinaciones.toLocaleString('es-ES')}</span> posibles cupones.
+        `;
+
+        let charset = "";
+        if(nSelect === 10) charset = "0123456789";
+        if(nSelect === 26) charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        if(nSelect === 36) charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+        let token = "";
+        let availableChars = charset.split('');
+        for(let i=0; i<k; i++) {
+            const randIndex = Math.floor(Math.random() * availableChars.length);
+            token += availableChars[randIndex];
+            availableChars.splice(randIndex, 1);
+        }
+
+        document.getElementById('generated-token').innerText = token;
+    }
+
+    generarToken();
+</script>

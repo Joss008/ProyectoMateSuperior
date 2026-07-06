@@ -1,0 +1,158 @@
+/* Reseteo básico de estilos */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #0f172a; /* Azul Noche Oscuro */
+    
+    /* Imagen de fondo de comida. 
+       Como no tengo acceso directo al archivo del usuario, pongo un placeholder
+       que el usuario debe reemplazar por url('PYFOOT1.png') si la tiene en la carpeta css,
+       o url('../PYFOOT1.png') si está en frontend. */
+    background-image: 
+        linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)), 
+        url('../PYFOOT1.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efecto Noche Estrellada Dinámica */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: 
+        radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 4px),
+        radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px);
+    background-size: 550px 550px, 350px 350px;
+    background-position: 0 0, 40px 60px;
+    opacity: 0.15;
+    animation: starsMove 100s linear infinite;
+    z-index: 1;
+}
+
+@keyframes starsMove {
+    from { background-position: 0 0, 40px 60px; }
+    to { background-position: 550px 550px, 390px 410px; }
+}
+
+/* Contenedor principal del formulario */
+.login-container {
+    background-color: rgba(10, 10, 10, 0.7); /* Semitransparente oscuro */
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    padding: 50px 40px;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.login-container h2 {
+    color: #ffffff;
+    margin-bottom: 10px;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.login-container p {
+    color: #a1a1aa;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+/* Grupo de inputs */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #e5e5e5;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #3f3f46;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #ffffff;
+    transition: all 0.2s ease;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.input-group input::placeholder {
+    color: #71717a;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Botón principal */
+button {
+    width: 100%;
+    padding: 14px;
+    background: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+button:hover {
+    background: #e5e5e5;
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* Enlaces adicionales */
+.links {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.links a {
+    color: #c4b5fd; /* Morado claro */
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.links a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+    text-shadow: 0 0 8px rgba(196, 181, 253, 0.8);
+}

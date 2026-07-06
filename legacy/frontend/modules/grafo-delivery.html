@@ -1,0 +1,250 @@
+<div class="content-header">
+    <h3>Centro de Despacho y Rutas</h3>
+    <p>Asignación automática de repartidores utilizando <strong>Grafos Ponderados y Algoritmo de Dijkstra</strong>.</p>
+</div>
+
+<div style="display: flex; gap: 20px;">
+    <!-- Mapa de Despacho -->
+    <div class="card" style="flex: 2; padding: 0; overflow: hidden; display: flex; flex-direction: column;">
+        <div style="padding: 15px 20px; background: #f9fafb; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
+            <h4 style="font-size: 16px; color: #1f2937;">Mapa de Operaciones en Vivo</h4>
+            <span class="badge orange" id="traffic-badge">Tráfico Moderado</span>
+        </div>
+        
+        <div style="flex-grow: 1; background: #e5e7eb; position: relative; min-height: 400px;" id="graph-container">
+            <!-- Nodos de la ciudad -->
+            <div class="map-node rest" style="left: 50px; top: 180px;" id="node-R"><span>🏠</span><strong>Mate Superior</strong></div>
+            <div class="map-node point" style="left: 200px; top: 80px;" id="node-A"><span>📍</span><strong>Av. Principal</strong></div>
+            <div class="map-node point" style="left: 200px; top: 280px;" id="node-B"><span>📍</span><strong>Calle Secundaria</strong></div>
+            <div class="map-node client" style="left: 450px; top: 180px;" id="node-C"><span>👤</span><strong>Cliente (Pedido #402)</strong></div>
+
+            <!-- Aristas (Calles) -->
+            <svg width="100%" height="100%" style="position: absolute; top:0; left:0; pointer-events: none;">
+                <!-- Camino R -> A -->
+                <line id="edge-R-A" x1="80" y1="200" x2="220" y2="100" stroke="#9ca3af" stroke-width="4" style="transition: stroke 0.3s, stroke-width 0.3s;" />
+                <rect id="rect-R-A" x="130" y="130" width="60" height="24" rx="4" fill="white" stroke="#d1d5db"></rect>
+                <text id="text-R-A" x="160" y="146" fill="#4b5563" font-size="12" font-weight="bold" text-anchor="middle">5 min</text>
+
+                <!-- Camino R -> B -->
+                <line id="edge-R-B" x1="80" y1="200" x2="220" y2="300" stroke="#9ca3af" stroke-width="4" style="transition: stroke 0.3s, stroke-width 0.3s;" />
+                <rect id="rect-R-B" x="130" y="240" width="60" height="24" rx="4" fill="white" stroke="#d1d5db"></rect>
+                <text id="text-R-B" x="160" y="256" fill="#15803d" font-size="12" font-weight="bold" text-anchor="middle">2 min</text>
+
+                <!-- Camino A -> C -->
+                <line id="edge-A-C" x1="220" y1="100" x2="460" y2="200" stroke="#9ca3af" stroke-width="4" style="transition: stroke 0.3s, stroke-width 0.3s;" />
+                <rect id="rect-A-C" x="320" y="130" width="60" height="24" rx="4" fill="white" stroke="#d1d5db"></rect>
+                <text id="text-A-C" x="350" y="146" fill="#15803d" font-size="12" font-weight="bold" text-anchor="middle">3 min</text>
+
+                <!-- Camino B -> C -->
+                <line id="edge-B-C" x1="220" y1="300" x2="460" y2="200" stroke="#9ca3af" stroke-width="4" style="transition: stroke 0.3s, stroke-width 0.3s;" />
+                <rect id="rect-B-C" x="300" y="240" width="115" height="24" rx="4" fill="#fee2e2" stroke="#f87171"></rect>
+                <text id="text-B-C" x="358" y="256" fill="#dc2626" font-size="12" font-weight="bold" text-anchor="middle">8 min (Tráfico)</text>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Panel de Control del Repartidor -->
+    <div class="card" style="flex: 1; display: flex; flex-direction: column;">
+        <h4 style="margin-bottom: 5px; font-size: 16px; color: var(--text-main);">Detalle de Asignación</h4>
+        <p style="font-size: 13px; color: #6b7280; margin-bottom: 15px;">Pedido #402 - Listo para recojo</p>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 13px; color: #6b7280; margin-bottom: 5px;">Estado del Tráfico:</label>
+            <select id="traffic-status" onchange="cambiarTrafico()" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; background: var(--bg-body); color: var(--text-main);">
+                <option value="moderado" selected>Tráfico Moderado (Calle Sec. Lenta)</option>
+                <option value="normal">Tráfico Normal (Vías despejadas)</option>
+                <option value="congestionado_principal">Congestión en Av. Principal</option>
+            </select>
+        </div>
+        
+        <button onclick="calcularRuta()" class="btn btn-primary" style="margin-bottom: 20px; font-size: 15px; padding: 12px;">Despachar: Optimizar Ruta</button>
+        
+        <div style="border-top: 1px solid #e5e7eb; padding-top: 15px; flex-grow: 1; display: flex; flex-direction: column;">
+            <h5 style="color: #9ca3af; font-size: 12px; text-transform: uppercase;">Consola de Ruteo Inteligente</h5>
+            <div class="math-log" id="dijkstra-result" style="display: none; flex-grow: 1; overflow-y: auto; max-height: 250px;">
+                <!-- Resultados aquí -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .map-node {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        white-space: nowrap;
+        z-index: 2;
+        background: white;
+        padding: 5px 12px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border: 1px solid #d1d5db;
+    }
+    .map-node span { font-size: 24px; margin-bottom: 2px; }
+    .map-node strong { font-size: 11px; color: #374151; display: block; }
+    .map-node.rest { border: 2px solid #ea580c; background: #fff7ed; }
+    .map-node.client { border: 2px solid #3b82f6; background: #eff6ff; }
+</style>
+
+<script>
+    // Pesos dinámicos del grafo
+    let pesos = {
+        'R-A': 5,
+        'R-B': 2,
+        'A-C': 3,
+        'B-C': 8
+    };
+
+    function cambiarTrafico() {
+        const status = document.getElementById('traffic-status').value;
+        const badge = document.getElementById('traffic-badge');
+        
+        // Resetear aristas y limpiar consola
+        resetEdges();
+        document.getElementById('dijkstra-result').style.display = 'none';
+
+        // Obtener elementos visuales
+        const rectRA = document.getElementById('rect-R-A');
+        const textRA = document.getElementById('text-R-A');
+        const rectBC = document.getElementById('rect-B-C');
+        const textBC = document.getElementById('text-B-C');
+        
+        // Valores por defecto
+        rectRA.setAttribute('fill', 'white');
+        rectRA.setAttribute('stroke', '#d1d5db');
+        rectRA.setAttribute('width', '60');
+        rectRA.setAttribute('x', '130');
+        textRA.textContent = '5 min';
+        textRA.setAttribute('x', '160');
+        textRA.setAttribute('fill', '#4b5563');
+
+        rectBC.setAttribute('fill', 'white');
+        rectBC.setAttribute('stroke', '#d1d5db');
+        rectBC.setAttribute('width', '60');
+        rectBC.setAttribute('x', '320');
+        textBC.textContent = '3 min';
+        textBC.setAttribute('x', '350');
+        textBC.setAttribute('fill', '#15803d');
+
+        if (status === 'moderado') {
+            badge.innerText = 'Tráfico Moderado';
+            badge.className = 'badge orange';
+            pesos = { 'R-A': 5, 'R-B': 2, 'A-C': 3, 'B-C': 8 };
+            
+            rectBC.setAttribute('fill', '#fee2e2');
+            rectBC.setAttribute('stroke', '#f87171');
+            rectBC.setAttribute('width', '115');
+            rectBC.setAttribute('x', '300');
+            textBC.textContent = '8 min (Tráfico)';
+            textBC.setAttribute('x', '358');
+            textBC.setAttribute('fill', '#dc2626');
+        } else if (status === 'normal') {
+            badge.innerText = 'Tráfico Fluido';
+            badge.className = 'badge green';
+            pesos = { 'R-A': 5, 'R-B': 2, 'A-C': 3, 'B-C': 3 };
+        } else if (status === 'congestionado_principal') {
+            badge.innerText = 'Congestión Principal';
+            badge.className = 'badge orange';
+            pesos = { 'R-A': 12, 'R-B': 2, 'A-C': 3, 'B-C': 3 };
+
+            rectRA.setAttribute('fill', '#fee2e2');
+            rectRA.setAttribute('stroke', '#f87171');
+            rectRA.setAttribute('width', '115');
+            rectRA.setAttribute('x', '102');
+            textRA.textContent = '12 min (Tráfico)';
+            textRA.setAttribute('x', '160');
+            textRA.setAttribute('fill', '#dc2626');
+        }
+    }
+
+    function resetEdges() {
+        ['edge-R-A', 'edge-R-B', 'edge-A-C', 'edge-B-C'].forEach(id => {
+            const edge = document.getElementById(id);
+            if (edge) {
+                edge.setAttribute('stroke', '#9ca3af');
+                edge.setAttribute('stroke-width', '4');
+            }
+        });
+    }
+
+    function calcularRuta() {
+        resetEdges();
+        
+        // Algoritmo de Dijkstra
+        const dist = { 'R': 0, 'A': Infinity, 'B': Infinity, 'C': Infinity };
+        const prev = { 'R': null, 'A': null, 'B': null, 'C': null };
+        const visitados = new Set();
+        const vertices = ['R', 'A', 'B', 'C'];
+        
+        let logs = `> Ejecutando Dijkstra (Nodo origen: R)...\n`;
+        logs += `> Distancias iniciales: R=0, A=∞, B=∞, C=∞\n\n`;
+
+        while (visitados.size < vertices.length) {
+            // Obtener nodo con distancia mínima no visitado
+            let u = null;
+            let minDist = Infinity;
+            for (const v of vertices) {
+                if (!visitados.has(v) && dist[v] < minDist) {
+                    minDist = dist[v];
+                    u = v;
+                }
+            }
+            
+            if (u === null || minDist === Infinity) break;
+            
+            visitados.add(u);
+            logs += `Visitando nodo '${u}' (Distancia acumulada: ${dist[u]} min)\n`;
+            
+            // Relajar aristas desde u
+            let vecinos = [];
+            if (u === 'R') vecinos = [{ v: 'A', edge: 'R-A' }, { v: 'B', edge: 'R-B' }];
+            else if (u === 'A') vecinos = [{ v: 'C', edge: 'A-C' }];
+            else if (u === 'B') vecinos = [{ v: 'C', edge: 'B-C' }];
+            
+            vecinos.forEach(n => {
+                const peso = pesos[n.edge];
+                const alt = dist[u] + peso;
+                if (alt < dist[n.v]) {
+                    dist[n.v] = alt;
+                    prev[n.v] = u;
+                    logs += `  -> Relajando arista ${n.edge} ($${peso} min): nueva dist a ${n.v} es ${alt} min\n`;
+                } else {
+                    logs += `  -> Evaluando arista ${n.edge} ($${peso} min): dist anterior a ${n.v} (${dist[n.v]} min) es mejor\n`;
+                }
+            });
+            logs += `\n`;
+        }
+        
+        // Reconstruir camino
+        const camino = [];
+        let curr = 'C';
+        while (curr !== null) {
+            camino.unshift(curr);
+            curr = prev[curr];
+        }
+        
+        logs += `> Dijkstra terminado.\n`;
+        logs += `> Tiempo total mínimo: ${dist['C']} min\n`;
+        logs += `> Ruta Óptima: ${camino.join(' -> ')}\n\n`;
+        logs += `Notificando a repartidor...`;
+        
+        const resultDisplay = document.getElementById('dijkstra-result');
+        resultDisplay.innerHTML = logs.replace(/\n/g, '<br>').replace(/  /g, '&nbsp;&nbsp;');
+        resultDisplay.style.display = 'block';
+        
+        // Pintar aristas en color naranja con grosor
+        for (let i = 0; i < camino.length - 1; i++) {
+            const u = camino[i];
+            const v = camino[i+1];
+            const edgeId = `edge-${u}-${v}`;
+            const edge = document.getElementById(edgeId);
+            if (edge) {
+                edge.setAttribute('stroke', '#ea580c');
+                edge.setAttribute('stroke-width', '6');
+            }
+        }
+    }
+</script>
