@@ -13,9 +13,9 @@
         
         <div style="flex-grow: 1; background: #e5e7eb; position: relative; min-height: 400px;" id="graph-container">
             <!-- Nodos de la ciudad -->
-            <div class="map-node rest" style="left: 50px; top: 180px;" id="node-R"><span>🏠</span><strong>Mate Superior</strong></div>
-            <div class="map-node point" style="left: 200px; top: 80px;" id="node-A"><span>📍</span><strong>Av. Principal</strong></div>
-            <div class="map-node point" style="left: 200px; top: 280px;" id="node-B"><span>📍</span><strong>Calle Secundaria</strong></div>
+            <div class="map-node rest" style="left: 50px; top: 180px;" id="node-R"><span>🏢</span><strong>PYFOOT MART</strong></div>
+            <div class="map-node point" style="left: 200px; top: 80px;" id="node-A"><span>🛣️</span><strong>Av. Principal</strong></div>
+            <div class="map-node point" style="left: 200px; top: 280px;" id="node-B"><span>🛣️</span><strong>Calle Secundaria</strong></div>
             <div class="map-node client" style="left: 450px; top: 180px;" id="node-C"><span>👤</span><strong>Cliente (Pedido #402)</strong></div>
 
             <!-- Aristas (Calles) -->
@@ -28,17 +28,17 @@
                 <!-- Camino R -> B -->
                 <line id="edge-R-B" x1="80" y1="200" x2="220" y2="300" stroke="#9ca3af" stroke-width="4" style="transition: stroke 0.3s, stroke-width 0.3s;" />
                 <rect id="rect-R-B" x="130" y="240" width="60" height="24" rx="4" fill="white" stroke="#d1d5db"></rect>
-                <text id="text-R-B" x="160" y="256" fill="#15803d" font-size="12" font-weight="bold" text-anchor="middle">2 min</text>
+                <text id="text-R-B" x="160" y="256" fill="#15803d" font-size="12" font-weight="bold" text-anchor="middle">2 min ⏱️</text>
 
                 <!-- Camino A -> C -->
                 <line id="edge-A-C" x1="220" y1="100" x2="460" y2="200" stroke="#9ca3af" stroke-width="4" style="transition: stroke 0.3s, stroke-width 0.3s;" />
                 <rect id="rect-A-C" x="320" y="130" width="60" height="24" rx="4" fill="white" stroke="#d1d5db"></rect>
-                <text id="text-A-C" x="350" y="146" fill="#15803d" font-size="12" font-weight="bold" text-anchor="middle">3 min</text>
+                <text id="text-A-C" x="350" y="146" fill="#15803d" font-size="12" font-weight="bold" text-anchor="middle">3 min ⏱️</text>
 
                 <!-- Camino B -> C -->
                 <line id="edge-B-C" x1="220" y1="300" x2="460" y2="200" stroke="#9ca3af" stroke-width="4" style="transition: stroke 0.3s, stroke-width 0.3s;" />
                 <rect id="rect-B-C" x="300" y="240" width="115" height="24" rx="4" fill="#fee2e2" stroke="#f87171"></rect>
-                <text id="text-B-C" x="358" y="256" fill="#dc2626" font-size="12" font-weight="bold" text-anchor="middle">8 min (Tráfico)</text>
+                <text id="text-B-C" x="358" y="256" fill="#dc2626" font-size="12" font-weight="bold" text-anchor="middle">8 min ⏱️ (Tráfico)</text>
             </svg>
         </div>
     </div>
@@ -136,7 +136,7 @@
             rectBC.setAttribute('stroke', '#f87171');
             rectBC.setAttribute('width', '115');
             rectBC.setAttribute('x', '300');
-            textBC.textContent = '8 min (Tráfico)';
+            textBC.textContent = '8 min ⏱️(Tráfico)';
             textBC.setAttribute('x', '358');
             textBC.setAttribute('fill', '#dc2626');
         } else if (status === 'normal') {
@@ -152,7 +152,7 @@
             rectRA.setAttribute('stroke', '#f87171');
             rectRA.setAttribute('width', '115');
             rectRA.setAttribute('x', '102');
-            textRA.textContent = '12 min (Tráfico)';
+            textRA.textContent = '12 min ️⏱️ (Tráfico)';
             textRA.setAttribute('x', '160');
             textRA.setAttribute('fill', '#dc2626');
         }
